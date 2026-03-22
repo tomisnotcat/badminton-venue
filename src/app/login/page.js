@@ -102,6 +102,33 @@ export default function LoginPage() {
                         />
                       </div>
                     </div>
+                    
+                    {/* Province/City/District */}
+                    <div>
+                      <label className="block text-sm text-gray-500 mb-1">省/市/区</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <select className="px-3 py-3 border rounded-xl text-sm">
+                          <option>北京市</option>
+                          <option>上海市</option>
+                          <option>广东省</option>
+                          <option>浙江省</option>
+                          <option>江苏省</option>
+                        </select>
+                        <select className="px-3 py-3 border rounded-xl text-sm">
+                          <option>市辖区</option>
+                          <option>广州市</option>
+                          <option>杭州市</option>
+                          <option>南京市</option>
+                        </select>
+                        <select className="px-3 py-3 border rounded-xl text-sm">
+                          <option>朝阳区</option>
+                          <option>海淀区</option>
+                          <option>东城区</option>
+                          <option>西城区</option>
+                        </select>
+                      </div>
+                    </div>
+
                     <div>
                       <label className="block text-sm text-gray-500 mb-1">详细地址</label>
                       <div className="relative">
