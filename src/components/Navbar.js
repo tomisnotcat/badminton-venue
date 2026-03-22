@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Menu, X, Activity, User, Calendar, Trophy, Sparkles, School, Target, Award } from 'lucide-react'
+import { Menu, X, Activity, User, MapPin, Calendar, Users, Award } from 'lucide-react'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -17,17 +17,23 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden xl:flex items-center gap-4">
-            <Link href="/" className="text-gray-600 hover:text-primary text-sm">首页</Link>
-            <Link href="/venues" className="text-gray-600 hover:text-primary text-sm">场地</Link>
-            <Link href="/players" className="text-gray-600 hover:text-primary text-sm">球友</Link>
-            <Link href="/match" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1"><Sparkles className="w-4 h-4" />约球</Link>
-            <Link href="/events" className="text-gray-600 hover:text-primary text-sm">活动</Link>
-            <Link href="/courses" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1"><School className="w-4 h-4" />课程</Link>
-            <Link href="/coaches" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1"><Award className="w-4 h-4" />教练</Link>
-            <Link href="/skill-test" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1"><Target className="w-4 h-4" />测试</Link>
-            <Link href="/rankings" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1"><Trophy className="w-4 h-4" />排行</Link>
-            <Link href="/login" className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-full hover:bg-secondary text-sm"><User className="w-4 h-4" />登录</Link>
+          <div className="hidden md:flex items-center gap-8">
+            <Link href="/" className="text-gray-600 hover:text-primary font-medium">首页</Link>
+            <Link href="/venues" className="text-gray-600 hover:text-primary font-medium flex items-center gap-1">
+              <MapPin className="w-4 h-4" /> 球馆
+            </Link>
+            <Link href="/players" className="text-gray-600 hover:text-primary font-medium flex items-center gap-1">
+              <Users className="w-4 h-4" /> 球友
+            </Link>
+            <Link href="/match" className="text-gray-600 hover:text-primary font-medium flex items-center gap-1">
+              <Calendar className="w-4 h-4" /> 约球
+            </Link>
+            <Link href="/coaches" className="text-gray-600 hover:text-primary font-medium flex items-center gap-1">
+              <Award className="w-4 h-4" /> 教练
+            </Link>
+            <Link href="/login" className="px-4 py-2 bg-primary text-white rounded-full hover:bg-secondary font-medium">
+              登录
+            </Link>
           </div>
 
           {/* Mobile Toggle */}
@@ -38,17 +44,13 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {menuOpen && (
-          <div className="md:hidden py-4 border-t max-h-96 overflow-y-auto">
+          <div className="md:hidden py-4 border-t">
             <div className="flex flex-col gap-3">
-              <Link href="/" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>首页</Link>
-              <Link href="/venues" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>场地预订</Link>
-              <Link href="/players" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>球友</Link>
-              <Link href="/match" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>约球匹配</Link>
-              <Link href="/events" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>活动</Link>
-              <Link href="/courses" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>课程</Link>
-              <Link href="/coaches" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>教练团队</Link>
-              <Link href="/skill-test" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>等级测试</Link>
-              <Link href="/rankings" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>排行榜</Link>
+              <Link href="/" className="text-gray-600 px-2 font-medium" onClick={() => setMenuOpen(false)}>首页</Link>
+              <Link href="/venues" className="text-gray-600 px-2 font-medium" onClick={() => setMenuOpen(false)}>🏀 球馆</Link>
+              <Link href="/players" className="text-gray-600 px-2 font-medium" onClick={() => setMenuOpen(false)}>👥 球友</Link>
+              <Link href="/match" className="text-gray-600 px-2 font-medium" onClick={() => setMenuOpen(false)}>📅 约球</Link>
+              <Link href="/coaches" className="text-gray-600 px-2 font-medium" onClick={() => setMenuOpen(false)}>🏅 教练</Link>
               <Link href="/login" className="text-primary px-2 font-medium" onClick={() => setMenuOpen(false)}>登录</Link>
             </div>
           </div>

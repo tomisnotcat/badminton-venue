@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { MapPin, Users, Calendar, ArrowRight, Star } from 'lucide-react'
+import { MapPin, Users, Calendar, Award, ArrowRight, Star, Clock } from 'lucide-react'
 import { venues, players, events } from '@/data/venues'
 
 export default function HomePage() {
@@ -9,38 +9,45 @@ export default function HomePage() {
       <section className="bg-gradient-to-br from-green-500 to-emerald-600 text-white py-20">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">一起打球，更有趣</h1>
-          <p className="text-xl mb-8 opacity-90">找场地、约球友、参加比赛，就在羽球圈</p>
+          <p className="text-xl mb-8 opacity-90">找球馆、约球友、找教练，就上羽球圈</p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/venues" className="px-8 py-3 bg-white text-green-600 rounded-full font-semibold hover:bg-gray-100 transition">
-              订场地
+              🏀 找球馆
             </Link>
-            <Link href="/players" className="px-8 py-3 bg-green-700 text-white rounded-full font-semibold hover:bg-green-800 transition">
-              找球友
+            <Link href="/match" className="px-8 py-3 bg-green-700 text-white rounded-full font-semibold hover:bg-green-800 transition">
+              📅 去约球
+            </Link>
+            <Link href="/coaches" className="px-8 py-3 bg-green-700 text-white rounded-full font-semibold hover:bg-green-800 transition">
+              🏅 找教练
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Stats */}
+      {/* Quick Links */}
       <section className="py-12 bg-white">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <p className="text-3xl font-bold text-primary">50+</p>
-              <p className="text-gray-500">合作场馆</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-primary">1000+</p>
-              <p className="text-gray-500">活跃球友</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-primary">200+</p>
-              <p className="text-gray-500">每周活动</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-primary">4.8</p>
-              <p className="text-gray-500">平均评分</p>
-            </div>
+          <div className="grid md:grid-cols-4 gap-6">
+            <Link href="/venues" className="bg-green-50 rounded-2xl p-6 text-center hover:shadow-md transition">
+              <MapPin className="w-10 h-10 text-primary mx-auto mb-3" />
+              <h3 className="font-bold text-lg">球馆预订</h3>
+              <p className="text-gray-500 text-sm">附近场地一键预约</p>
+            </Link>
+            <Link href="/players" className="bg-blue-50 rounded-2xl p-6 text-center hover:shadow-md transition">
+              <Users className="w-10 h-10 text-blue-500 mx-auto mb-3" />
+              <h3 className="font-bold text-lg">找球友</h3>
+              <p className="text-gray-500 text-sm">同城球友随时约起</p>
+            </Link>
+            <Link href="/match" className="bg-purple-50 rounded-2xl p-6 text-center hover:shadow-md transition">
+              <Calendar className="w-10 h-10 text-purple-500 mx-auto mb-3" />
+              <h3 className="font-bold text-lg">发起约球</h3>
+              <p className="text-gray-500 text-sm">发布活动等人响应</p>
+            </Link>
+            <Link href="/coaches" className="bg-amber-50 rounded-2xl p-6 text-center hover:shadow-md transition">
+              <Award className="w-10 h-10 text-amber-500 mx-auto mb-3" />
+              <h3 className="font-bold text-lg">专业教练</h3>
+              <p className="text-gray-500 text-sm">预约教学提升水平</p>
+            </Link>
           </div>
         </div>
       </section>
@@ -49,7 +56,7 @@ export default function HomePage() {
       <section className="py-16">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold">热门场地</h2>
+            <h2 className="text-2xl font-bold">热门球馆</h2>
             <Link href="/venues" className="text-primary flex items-center gap-1 hover:underline">
               查看更多 <ArrowRight className="w-4 h-4" />
             </Link>
@@ -87,7 +94,7 @@ export default function HomePage() {
               查看更多 <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-4 gap-6">
             {players.slice(0, 4).map(player => (
               <div key={player.id} className="bg-gray-50 rounded-2xl p-6 text-center">
                 <div className="text-5xl mb-3">{player.avatar}</div>
@@ -100,12 +107,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Events */}
+      {/* Match Events */}
       <section className="py-16">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold">近期活动</h2>
-            <Link href="/events" className="text-primary flex items-center gap-1 hover:underline">
+            <h2 className="text-2xl font-bold">最新约球</h2>
+            <Link href="/match" className="text-primary flex items-center gap-1 hover:underline">
               查看更多 <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -125,6 +132,19 @@ export default function HomePage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-16 bg-gradient-to-r from-green-500 to-emerald-600 text-white">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">准备好开始了吗？</h2>
+          <p className="text-xl mb-8 opacity-90">加入羽球圈，和万千球友一起享受羽毛球</p>
+          <div className="flex justify-center gap-4">
+            <Link href="/venues" className="px-8 py-3 bg-white text-green-600 rounded-full font-semibold hover:bg-gray-100">
+              立即体验
+            </Link>
           </div>
         </div>
       </section>
