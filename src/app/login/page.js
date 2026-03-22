@@ -90,17 +90,41 @@ export default function LoginPage() {
                 
                 {/* Additional fields based on role */}
                 {form.role === 'venue' && (
-                  <div>
-                    <label className="block text-sm text-gray-500 mb-1">球馆名称</label>
-                    <div className="relative">
-                      <Building2 className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                      <input
-                        type="text"
-                        placeholder="请输入球馆名称"
-                        className="w-full pl-10 pr-4 py-3 border rounded-xl"
-                      />
+                  <>
+                    <div>
+                      <label className="block text-sm text-gray-500 mb-1">球馆名称</label>
+                      <div className="relative">
+                        <Building2 className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                        <input
+                          type="text"
+                          placeholder="请输入球馆名称"
+                          className="w-full pl-10 pr-4 py-3 border rounded-xl"
+                        />
+                      </div>
                     </div>
-                  </div>
+                    <div>
+                      <label className="block text-sm text-gray-500 mb-1">详细地址</label>
+                      <div className="relative">
+                        <MapPin className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                        <input
+                          type="text"
+                          placeholder="请输入球馆详细地址"
+                          className="w-full pl-10 pr-4 py-3 border rounded-xl"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-500 mb-1">联系电话</label>
+                      <div className="relative">
+                        <Phone className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                        <input
+                          type="tel"
+                          placeholder="请输入联系电话"
+                          className="w-full pl-10 pr-4 py-3 border rounded-xl"
+                        />
+                      </div>
+                    </div>
+                  </>
                 )}
                 {form.role === 'coach' && (
                   <div>
