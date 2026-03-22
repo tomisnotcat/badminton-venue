@@ -4,6 +4,36 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Mail, Lock, User, Phone, MapPin, ArrowRight, Building2, Award, User as UserIcon } from 'lucide-react'
 
+// 省市区数据
+const regionData = {
+  '北京市': {
+    '市辖区': ['朝阳区', '海淀区', '东城区', '西城区', '丰台区', '石景山区', '通州区', '顺义区', '昌平区', '大兴区', '房山区', '门头沟区', '怀柔区', '平谷区', '密云区', '延庆区']
+  },
+  '上海市': {
+    '市辖区': ['黄浦区', '徐汇区', '长宁区', '静安区', '普陀区', '虹口区', '杨浦区', '闵行区', '宝山区', '嘉定区', '浦东新区', '金山区', '松江区', '青浦区', '奉贤区', '崇明区']
+  },
+  '广东省': {
+    '广州市': ['天河区', '越秀区', '海珠区', '荔湾区', '白云区', '黄埔区', '番禺区', '花都区', '南沙区', '从化区', '增城区'],
+    '深圳市': ['福田区', '罗湖区', '南山区', '宝安区', '龙岗区', '盐田区', '龙华区', '坪山区', '光明区'],
+    '东莞市': ['南城区', '东城区', '莞城区', '万江区', '石碣镇', '石龙镇', '茶山镇', '石排镇', '企石镇'],
+    '佛山市': ['禅城区', '南海区', '顺德区', '三水区', '高明区'],
+  },
+  '浙江省': {
+    '杭州市': ['上城区', '拱墅区', '西湖区', '滨江区', '萧山区', '余杭区', '富阳区', '临安区', '临平区', '钱塘区'],
+    '宁波市': ['海曙区', '江北区', '北仑区', '镇海区', '鄞州区', '奉化区', '余姚市', '慈溪市'],
+    '温州市': ['鹿城区', '龙湾区', '瓯海区', '洞头区', '瑞安市', '乐清市', '永嘉县', '平阳县'],
+  },
+  '江苏省': {
+    '南京市': ['玄武区', '秦淮区', '建邺区', '鼓楼区', '浦口区', '栖霞区', '雨花台区', '江宁区', '六合区', '溧水区', '高淳区'],
+    '苏州市': ['姑苏区', '虎丘区', '吴中区', '相城区', '吴江区', '常熟市', '张家港市', '昆山市', '太仓市'],
+    '无锡市': ['梁溪区', '滨湖区', '惠山区', '锡山区', '新吴区', '江阴市', '宜兴市'],
+  },
+  '四川省': {
+    '成都市': ['锦江区', '青羊区', '金牛区', '武侯区', '成华区', '龙泉驿区', '青白江区', '新都区', '温江区', '双流区', '郫都区', '新津区'],
+    '绵阳市': ['涪城区', '游仙区', '安州区', '三台县', '盐亭县', '梓潼县', '北川县', '平武县', '江油市'],
+  },
+}
+
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true)
   const [form, setForm] = useState({ 
@@ -13,6 +43,26 @@ export default function LoginPage() {
     phone: '',
     role: 'player'
   })
+
+  // 省市区选择状态
+  const [province, setProvince] = useState('')
+  const [city, setCity] = useState('')
+  const [district, setDistrict] = useState('')
+
+  const provinces = Object.keys(regionData)
+  const cities = province ? Object.keys(regionData[province] || {}) : []
+  const districts = province && city ? (regionData[province]?.[city] || []) : []
+
+  const handleProvinceChange = (value) => {
+    setProvince(value)
+    setCity('')
+    setDistrict('')
+  }
+
+  const handleCityChange = (value) => {
+    setCity(value)
+    setDistrict('')
+  }
 
   const roles = [
     { id: 'player', name: '球友', icon: '🏸', desc: '寻找球友，一起打球' },
@@ -103,28 +153,41 @@ export default function LoginPage() {
                       </div>
                     </div>
                     
-                    {/* Province/City/District */}
+                    {/* Province/City/District - 正确联动 */}
                     <div>
                       <label className="block text-sm text-gray-500 mb-1">省/市/区</label>
                       <div className="grid grid-cols-3 gap-2">
-                        <select className="px-3 py-3 border rounded-xl text-sm">
-                          <option>北京市</option>
-                          <option>上海市</option>
-                          <option>广东省</option>
-                          <option>浙江省</option>
-                          <option>江苏省</option>
+                        <select 
+                          value={province}
+                          onChange={(e) => handleProvinceChange(e.target.value)}
+                          className="px-3 py-3 border rounded-xl text-sm"
+                        >
+                          <option value="">请选择省</option>
+                          {provinces.map(p => (
+                            <option key={p} value={p}>{p}</option>
+                          ))}
                         </select>
-                        <select className="px-3 py-3 border rounded-xl text-sm">
-                          <option>市辖区</option>
-                          <option>广州市</option>
-                          <option>杭州市</option>
-                          <option>南京市</option>
+                        <select 
+                          value={city}
+                          onChange={(e) => handleCityChange(e.target.value)}
+                          disabled={!province}
+                          className="px-3 py-3 border rounded-xl text-sm disabled:opacity-50"
+                        >
+                          <option value="">请选择市</option>
+                          {cities.map(c => (
+                            <option key={c} value={c}>{c}</option>
+                          ))}
                         </select>
-                        <select className="px-3 py-3 border rounded-xl text-sm">
-                          <option>朝阳区</option>
-                          <option>海淀区</option>
-                          <option>东城区</option>
-                          <option>西城区</option>
+                        <select 
+                          value={district}
+                          onChange={(e) => setDistrict(e.target.value)}
+                          disabled={!city}
+                          className="px-3 py-3 border rounded-xl text-sm disabled:opacity-50"
+                        >
+                          <option value="">请选择区</option>
+                          {districts.map(d => (
+                            <option key={d} value={d}>{d}</option>
+                          ))}
                         </select>
                       </div>
                     </div>
