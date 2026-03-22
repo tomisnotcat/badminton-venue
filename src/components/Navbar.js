@@ -25,7 +25,6 @@ export default function Navbar() {
             <Link href="/events" className="text-gray-600 hover:text-primary text-sm">活动</Link>
             <Link href="/courses" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1"><School className="w-4 h-4" />课程</Link>
             <Link href="/coaches" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1"><Award className="w-4 h-4" />教练</Link>
-            <Link href="/shop" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1"><ShoppingBag className="w-4 h-4" />商城</Link>
             <Link href="/news" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1"><Newspaper className="w-4 h-4" />资讯</Link>
             <Link href="/videos" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1"><Play className="w-4 h-4" />视频</Link>
             <Link href="/community" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1"><MessageCircle className="w-4 h-4" />社区</Link>
@@ -51,7 +50,6 @@ export default function Navbar() {
               <Link href="/events" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>活动</Link>
               <Link href="/courses" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>课程</Link>
               <Link href="/coaches" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>教练团队</Link>
-              <Link href="/shop" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>运动商城</Link>
               <Link href="/news" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>资讯</Link>
               <Link href="/videos" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>教学视频</Link>
               <Link href="/community" className="text-gray-600 px-2" onClick={() => setMenuOpen(false)}>社区</Link>
