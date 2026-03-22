@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Menu, X, Activity, User, MapPin, Calendar, Users, Award } from 'lucide-react'
+import { Menu, X, Activity, User, MapPin, Calendar, Users, Award, MessageCircle } from 'lucide-react'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -31,6 +31,9 @@ export default function Navbar() {
             <Link href="/coaches" className="text-gray-600 hover:text-primary font-medium flex items-center gap-1">
               <Award className="w-4 h-4" /> 教练
             </Link>
+            <Link href="/messages" className="text-gray-600 hover:text-primary font-medium flex items-center gap-1">
+              <MessageCircle className="w-4 h-4" /> 消息
+            </Link>
             <Link href="/login" className="px-4 py-2 bg-primary text-white rounded-full hover:bg-secondary font-medium">
               登录
             </Link>
@@ -51,6 +54,7 @@ export default function Navbar() {
               <Link href="/players" className="text-gray-600 px-2 font-medium" onClick={() => setMenuOpen(false)}>👥 球友</Link>
               <Link href="/match" className="text-gray-600 px-2 font-medium" onClick={() => setMenuOpen(false)}>📅 约球</Link>
               <Link href="/coaches" className="text-gray-600 px-2 font-medium" onClick={() => setMenuOpen(false)}>🏅 教练</Link>
+              <Link href="/messages" className="text-gray-600 px-2 font-medium" onClick={() => setMenuOpen(false)}>💬 消息</Link>
               <Link href="/login" className="text-primary px-2 font-medium" onClick={() => setMenuOpen(false)}>登录</Link>
             </div>
           </div>
