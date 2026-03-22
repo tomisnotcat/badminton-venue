@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Menu, X, Activity, User, Users, Calendar, Trophy, Sparkles } from 'lucide-react'
+import { Menu, X, Activity, User, Users, Calendar, Trophy, Sparkles, School, MessageCircle, Target } from 'lucide-react'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -25,6 +25,15 @@ export default function Navbar() {
               <Sparkles className="w-4 h-4" /> 约球
             </Link>
             <Link href="/events" className="text-gray-600 hover:text-primary text-sm">活动</Link>
+            <Link href="/courses" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1">
+              <School className="w-4 h-4" /> 课程
+            </Link>
+            <Link href="/community" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1">
+              <MessageCircle className="w-4 h-4" /> 社区
+            </Link>
+            <Link href="/skill-test" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1">
+              <Target className="w-4 h-4" /> 测试
+            </Link>
             <Link href="/rankings" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1">
               <Trophy className="w-4 h-4" /> 排行
             </Link>
@@ -48,6 +57,9 @@ export default function Navbar() {
               <Link href="/players" className="text-gray-600" onClick={() => setMenuOpen(false)}>球友</Link>
               <Link href="/match" className="text-gray-600" onClick={() => setMenuOpen(false)}>约球匹配</Link>
               <Link href="/events" className="text-gray-600" onClick={() => setMenuOpen(false)}>活动</Link>
+              <Link href="/courses" className="text-gray-600" onClick={() => setMenuOpen(false)}>课程</Link>
+              <Link href="/community" className="text-gray-600" onClick={() => setMenuOpen(false)}>社区</Link>
+              <Link href="/skill-test" className="text-gray-600" onClick={() => setMenuOpen(false)}>等级测试</Link>
               <Link href="/rankings" className="text-gray-600" onClick={() => setMenuOpen(false)}>排行榜</Link>
               <Link href="/login" className="text-primary" onClick={() => setMenuOpen(false)}>登录</Link>
             </div>
