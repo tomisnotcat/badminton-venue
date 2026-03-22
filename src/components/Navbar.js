@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Menu, X, Activity, User } from 'lucide-react'
+import { Menu, X, Activity, User, Users, Calendar, Trophy, Sparkles } from 'lucide-react'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -17,13 +17,19 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8">
-            <Link href="/" className="text-gray-600 hover:text-primary">首页</Link>
-            <Link href="/venues" className="text-gray-600 hover:text-primary">场地预订</Link>
-            <Link href="/players" className="text-gray-600 hover:text-primary">球友</Link>
-            <Link href="/events" className="text-gray-600 hover:text-primary">活动</Link>
-            <Link href="/my" className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-full hover:bg-secondary">
-              <User className="w-4 h-4" /> 我的
+          <div className="hidden md:flex items-center gap-6">
+            <Link href="/" className="text-gray-600 hover:text-primary text-sm">首页</Link>
+            <Link href="/venues" className="text-gray-600 hover:text-primary text-sm">场地</Link>
+            <Link href="/players" className="text-gray-600 hover:text-primary text-sm">球友</Link>
+            <Link href="/match" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1">
+              <Sparkles className="w-4 h-4" /> 约球
+            </Link>
+            <Link href="/events" className="text-gray-600 hover:text-primary text-sm">活动</Link>
+            <Link href="/rankings" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1">
+              <Trophy className="w-4 h-4" /> 排行
+            </Link>
+            <Link href="/login" className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-full hover:bg-secondary text-sm">
+              <User className="w-4 h-4" /> 登录
             </Link>
           </div>
 
@@ -40,8 +46,10 @@ export default function Navbar() {
               <Link href="/" className="text-gray-600" onClick={() => setMenuOpen(false)}>首页</Link>
               <Link href="/venues" className="text-gray-600" onClick={() => setMenuOpen(false)}>场地预订</Link>
               <Link href="/players" className="text-gray-600" onClick={() => setMenuOpen(false)}>球友</Link>
+              <Link href="/match" className="text-gray-600" onClick={() => setMenuOpen(false)}>约球匹配</Link>
               <Link href="/events" className="text-gray-600" onClick={() => setMenuOpen(false)}>活动</Link>
-              <Link href="/my" className="text-primary" onClick={() => setMenuOpen(false)}>我的</Link>
+              <Link href="/rankings" className="text-gray-600" onClick={() => setMenuOpen(false)}>排行榜</Link>
+              <Link href="/login" className="text-primary" onClick={() => setMenuOpen(false)}>登录</Link>
             </div>
           </div>
         )}
