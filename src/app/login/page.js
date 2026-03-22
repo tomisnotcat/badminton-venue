@@ -355,14 +355,95 @@ export default function LoginPage() {
                   </>
                 )}
                 {form.role === 'coach' && (
+                  <>
+                    <div>
+                      <label className="block text-sm text-gray-500 mb-1">执教年限</label>
+                      <select className="w-full px-4 py-3 border rounded-xl">
+                        <option>1年以下</option>
+                        <option>1-3年</option>
+                        <option>3-5年</option>
+                        <option>5年以上</option>
+                      </select>
+                    </div>
+                    {/* 省市区选择 */}
+                    <div>
+                      <label className="block text-sm text-gray-500 mb-1">所在地区</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <select 
+                          value={province}
+                          onChange={(e) => handleProvinceChange(e.target.value)}
+                          className="px-3 py-3 border rounded-xl text-sm"
+                        >
+                          <option value="">请选择省</option>
+                          {provinces.map(p => (
+                            <option key={p} value={p}>{p}</option>
+                          ))}
+                        </select>
+                        <select 
+                          value={city}
+                          onChange={(e) => handleCityChange(e.target.value)}
+                          disabled={!province}
+                          className="px-3 py-3 border rounded-xl text-sm disabled:opacity-50"
+                        >
+                          <option value="">请选择市</option>
+                          {cities.map(c => (
+                            <option key={c} value={c}>{c}</option>
+                          ))}
+                        </select>
+                        <select 
+                          value={district}
+                          onChange={(e) => setDistrict(e.target.value)}
+                          disabled={!city}
+                          className="px-3 py-3 border rounded-xl text-sm disabled:opacity-50"
+                        >
+                          <option value="">请选择区</option>
+                          {districts.map(d => (
+                            <option key={d} value={d}>{d}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {/* 球友也需要选择省市区 */}
+                {form.role === 'player' && (
                   <div>
-                    <label className="block text-sm text-gray-500 mb-1">执教年限</label>
-                    <select className="w-full px-4 py-3 border rounded-xl">
-                      <option>1年以下</option>
-                      <option>1-3年</option>
-                      <option>3-5年</option>
-                      <option>5年以上</option>
-                    </select>
+                    <label className="block text-sm text-gray-500 mb-1">所在地区</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      <select 
+                        value={province}
+                        onChange={(e) => handleProvinceChange(e.target.value)}
+                        className="px-3 py-3 border rounded-xl text-sm"
+                      >
+                        <option value="">请选择省</option>
+                        {provinces.map(p => (
+                          <option key={p} value={p}>{p}</option>
+                        ))}
+                      </select>
+                      <select 
+                        value={city}
+                        onChange={(e) => handleCityChange(e.target.value)}
+                        disabled={!province}
+                        className="px-3 py-3 border rounded-xl text-sm disabled:opacity-50"
+                      >
+                        <option value="">请选择市</option>
+                        {cities.map(c => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
+                      <select 
+                        value={district}
+                        onChange={(e) => setDistrict(e.target.value)}
+                        disabled={!city}
+                        className="px-3 py-3 border rounded-xl text-sm disabled:opacity-50"
+                      >
+                        <option value="">请选择区</option>
+                        {districts.map(d => (
+                          <option key={d} value={d}>{d}</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 )}
               </>
