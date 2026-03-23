@@ -2,11 +2,12 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { MapPin, Star, ArrowLeft, Trophy, MessageCircle, Calendar } from 'lucide-react'
+import { ArrowLeft, MapPin, Trophy, Star, MessageCircle, Calendar, User, Heart, Share2, CheckCircle } from 'lucide-react'
 import { players } from '@/data/venues'
 
 export default function PlayerDetailPage({ params }) {
   const player = players.find(p => p.id === parseInt(params.id))
+  const [liked, setLiked] = useState(false)
 
   if (!player) {
     return (
@@ -20,73 +21,105 @@ export default function PlayerDetailPage({ params }) {
     )
   }
 
-  const getWinRate = () => {
-    if (!player.matches || player.matches === 0) return 0
-    return Math.round((player.wins / player.matches) * 100)
-  }
+  const winRate = player.matches ? Math.round((player.wins / player.matches) * 100) : 0
 
   return (
     <div className="min-h-screen pb-20">
-      <div className="bg-white sticky top-16 z-40 border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <Link href="/players" className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700">
-            <ArrowLeft className="w-5 h-5" />返回球友列表
+      {/* Header */}
+      <div className="bg-white sticky top-0 z-40 border-b shadow-sm">
+        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+          <Link href="/players" className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+            <ArrowLeft className="w-5 h-5" />返回
           </Link>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setLiked(!liked)} className={`p-2 rounded-full ${liked ? 'bg-red-50 text-red-500' : 'bg-gray-50 text-gray-500'} hover:bg-gray-100`}>
+              <Heart className={`w-5 h-5 ${liked ? 'fill-current' : ''}`} />
+            </button>
+            <button className="p-2 bg-gray-50 rounded-full text-gray-500 hover:bg-gray-100">
+              <Share2 className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-2xl p-8 shadow-sm mb-6">
-          <div className="flex items-start gap-6">
-            <div className="text-8xl">{player.avatar}</div>
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold">{player.name}</h1>
-                <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">{player.level}</span>
-              </div>
-              <div className="flex items-center gap-4 text-gray-500 mb-4">
-                <div className="flex items-center gap-1">
-                  <MapPin className="w-4 h-4" />{player.province} {player.city} {player.district}
-                </div>
-                <div>可约: {player.available}</div>
-              </div>
-              <p className="text-gray-600">{player.intro}</p>
-            </div>
-            <div className="text-right">
-              <div className="text-4xl font-bold text-primary mb-1">{player.skill}</div>
-              <div className="text-gray-400 text-sm">技术水平</div>
-            </div>
-          </div>
-        </div>
-
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        {/* Profile */}
         <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
-          <h2 className="text-xl font-bold mb-4">战绩统计</h2>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="text-center bg-green-50 rounded-xl p-4">
-              <div className="text-3xl font-bold text-primary mb-1">{player.matches}</div>
-              <div className="text-gray-500 text-sm">参赛次数</div>
-            </div>
-            <div className="text-center bg-yellow-50 rounded-xl p-4">
-              <div className="text-3xl font-bold text-yellow-600 mb-1">{player.wins}</div>
-              <div className="text-gray-500 text-sm">获胜次数</div>
-            </div>
-            <div className="text-center bg-blue-50 rounded-xl p-4">
-              <div className="text-3xl font-bold text-blue-600 mb-1">{getWinRate()}%</div>
-              <div className="text-gray-500 text-sm">胜率</div>
+          <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
+            <div className="text-8xl">{player.avatar}</div>
+            <div className="flex-1 text-center md:text-left">
+              <h1 className="text-3xl font-bold mb-2">{player.name}</h1>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-3">
+                <span className="px-3 py-1 bg-green-50 text-green-600 rounded-full text-sm">{player.level}</span>
+                <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm">水平: {player.skill}</span>
+              </div>
+              <div className="flex items-center justify-center md:justify-start gap-2 text-gray-500">
+                <MapPin className="w-4 h-4" />
+                <span>{player.province} {player.city} {player.district}</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-sm">
-          <h2 className="text-xl font-bold mb-4">约球</h2>
-          <div className="flex gap-4">
-            <button className="flex-1 py-4 bg-primary text-white rounded-xl font-bold text-lg hover:bg-green-600 transition flex items-center justify-center gap-2">
-              <Calendar className="w-5 h-5" />发起约球
-            </button>
-            <button className="px-6 py-4 border-2 border-primary text-primary rounded-xl font-bold hover:bg-green-50 transition flex items-center justify-center gap-2">
-              <MessageCircle className="w-5 h-5" />发消息
-            </button>
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white rounded-2xl p-6 shadow-sm text-center">
+            <Trophy className="w-8 h-8 mx-auto mb-2 text-yellow-500" />
+            <div className="text-3xl font-bold">{player.matches || 0}</div>
+            <div className="text-gray-500 text-sm">参赛次数</div>
           </div>
+          <div className="bg-white rounded-2xl p-6 shadow-sm text-center">
+            <Star className="w-8 h-8 mx-auto mb-2 text-green-500" />
+            <div className="text-3xl font-bold">{player.wins || 0}</div>
+            <div className="text-gray-500 text-sm">获胜次数</div>
+          </div>
+          <div className="bg-white rounded-2xl p-6 shadow-sm text-center">
+            <Award className="w-8 h-8 mx-auto mb-2 text-blue-500" />
+            <div className="text-3xl font-bold">{winRate}%</div>
+            <div className="text-gray-500 text-sm">胜率</div>
+          </div>
+          <div className="bg-white rounded-2xl p-6 shadow-sm text-center">
+            <User className="w-8 h-8 mx-auto mb-2 text-purple-500" />
+            <div className="text-3xl font-bold">{player.age || 30}</div>
+            <div className="text-gray-500 text-sm">年龄</div>
+          </div>
+        </div>
+
+        {/* Intro */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
+          <h2 className="font-bold text-lg mb-4">个人简介</h2>
+          <p className="text-gray-600 leading-relaxed">{player.intro}</p>
+        </div>
+
+        {/* Tags */}
+        {player.tags && (
+          <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
+            <h2 className="font-bold text-lg mb-4">标签</h2>
+            <div className="flex flex-wrap gap-2">
+              {player.tags.map((tag, i) => (
+                <span key={i} className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">{tag}</span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Available Time */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
+          <h2 className="font-bold text-lg mb-4">可约时间</h2>
+          <div className="flex items-center gap-2 text-gray-600">
+            <Calendar className="w-5 h-5 text-primary" />
+            <span>{player.available}</span>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-4">
+          <Link href="/match" className="flex-1 py-4 bg-primary text-white rounded-xl font-bold text-center hover:bg-green-600 transition">
+            发起约球
+          </Link>
+          <Link href="/messages" className="flex-1 py-4 bg-white border-2 border-primary text-primary rounded-xl font-bold text-center hover:bg-green-50 transition flex items-center justify-center gap-2">
+            <MessageCircle className="w-5 h-5" />发消息
+          </Link>
         </div>
       </div>
     </div>
