@@ -1,132 +1,113 @@
-'use client'
-
-import { useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import { MapPin, Star, Calendar, Clock, Users, Check } from 'lucide-react'
+import Link from 'next/link'
+import { MapPin, Star, Users, Clock, Phone, ArrowLeft, CheckCircle } from 'lucide-react'
 import { venues } from '@/data/venues'
 
-export default function VenueDetailPage() {
-  const params = useParams()
-  const router = useRouter()
+export default function VenueDetailPage({ params }) {
   const venue = venues.find(v => v.id === parseInt(params.id))
-  
-  const [date, setDate] = useState('')
-  const [time, setTime] = useState('')
-  const [hours, setHours] = useState(1)
-  const [booking, setBooking] = useState(false)
 
   if (!venue) {
-    return <div className="min-h-screen py-8 text-center">场馆不存在</div>
-  }
-
-  const total = venue.price * hours
-
-  const handleBook = () => {
-    if (!date || !time) {
-      alert('请选择日期和时间')
-      return
-    }
-    setBooking(true)
-    setTimeout(() => {
-      alert('预订成功！')
-      setBooking(false)
-      router.push('/my')
-    }, 1000)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">球馆未找到</h1>
+          <Link href="/venues" className="text-primary hover:underline">
+            返回球馆列表
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <div className="bg-white rounded-2xl overflow-hidden shadow-sm">
-          <div className="h-64 bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center text-8xl">
-            {venue.image}
+        {/* Back Button */}
+        <Link href="/venues" className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 mb-6">
+          <ArrowLeft className="w-5 h-5" />
+          返回球馆列表
+        </Link>
+
+        {/* Header */}
+        <div className="bg-white rounded-2xl p-8 shadow-sm mb-6">
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <div className="text-6xl mb-4">{venue.image}</div>
+              <h1 className="text-3xl font-bold mb-2">{venue.name}</h1>
+              <div className="flex items-center gap-2 text-gray-500">
+                <MapPin className="w-5 h-5" />
+                <span>{venue.province} {venue.city} {venue.district}</span>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="flex items-center gap-1 bg-yellow-50 px-4 py-2 rounded-full mb-2">
+                <Star className="w-5 h-5 text-yellow-500 fill-current" />
+                <span className="text-xl font-bold">{venue.rating}</span>
+              </div>
+              <span className="text-gray-500 text-sm">评分</span>
+            </div>
           </div>
-          
-          <div className="p-6">
-            <div className="flex justify-between items-start mb-4">
+
+          <div className="grid md:grid-cols-3 gap-6 py-6 border-t">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary mb-1">¥{venue.price}</div>
+              <div className="text-gray-500 text-sm">每小时</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary mb-1">{venue.courts}</div>
+              <div className="text-gray-500 text-sm">片场地</div>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 text-gray-600 mb-1">
+                <Clock className="w-5 h-5" />
+                <span className="font-medium">{venue.hours}</span>
+              </div>
+              <div className="text-gray-500 text-sm">营业时间</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Info */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
+          <h2 className="text-xl font-bold mb-4">详细信息</h2>
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <MapPin className="w-5 h-5 text-gray-400 mt-1" />
               <div>
-                <h1 className="text-2xl font-bold mb-2">{venue.name}</h1>
-                <p className="text-gray-500 flex items-center gap-1">
-                  <MapPin className="w-4 h-4" /> {venue.address}
-                </p>
-              </div>
-              <div className="flex items-center gap-1 text-yellow-500 bg-yellow-50 px-3 py-1 rounded-full">
-                <Star className="w-4 h-4 fill-current" />
-                <span className="font-bold">{venue.rating}</span>
+                <div className="font-medium">详细地址</div>
+                <div className="text-gray-500">{venue.address}</div>
               </div>
             </div>
-
-            <div className="flex flex-wrap gap-2 mb-6">
-              {venue.facilities.map(f => (
-                <span key={f} className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm flex items-center gap-1">
-                  <Check className="w-3 h-3" /> {f}
-                </span>
-              ))}
-              <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm flex items-center gap-1">
-                <Users className="w-3 h-3" /> {venue.courts}片场地
-              </span>
-            </div>
-
-            {/* Booking Form */}
-            <div className="bg-gray-50 rounded-xl p-6">
-              <h2 className="font-bold text-lg mb-4">预订场地</h2>
-              <div className="grid md:grid-cols-3 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm text-gray-500 mb-1">日期</label>
-                  <input
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="w-full px-4 py-3 border rounded-xl"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-500 mb-1">时间</label>
-                  <select
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    className="w-full px-4 py-3 border rounded-xl"
-                  >
-                    <option value="">选择时间</option>
-                    <option value="06:00">06:00-08:00</option>
-                    <option value="08:00">08:00-10:00</option>
-                    <option value="10:00">10:00-12:00</option>
-                    <option value="14:00">14:00-16:00</option>
-                    <option value="16:00">16:00-18:00</option>
-                    <option value="18:00">18:00-20:00</option>
-                    <option value="20:00">20:00-22:00</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-500 mb-1">时长</label>
-                  <select
-                    value={hours}
-                    onChange={(e) => setHours(parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border rounded-xl"
-                  >
-                    <option value={1}>1小时</option>
-                    <option value={2}>2小时</option>
-                    <option value={3}>3小时</option>
-                    <option value={4}>4小时</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center pt-4 border-t">
-                <div>
-                  <span className="text-gray-500">总价: </span>
-                  <span className="text-3xl font-bold text-primary">¥{total}</span>
-                </div>
-                <button
-                  onClick={handleBook}
-                  disabled={booking}
-                  className="px-8 py-3 bg-primary text-white rounded-xl font-bold hover:bg-secondary disabled:opacity-50"
-                >
-                  {booking ? '预订中...' : '立即预订'}
-                </button>
+            <div className="flex items-start gap-3">
+              <Phone className="w-5 h-5 text-gray-400 mt-1" />
+              <div>
+                <div className="font-medium">联系电话</div>
+                <div className="text-gray-500">{venue.phone}</div>
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Facilities */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
+          <h2 className="text-xl font-bold mb-4">设施服务</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {venue.facilities.map(facility => (
+              <div key={facility} className="flex items-center gap-2 bg-green-50 text-green-700 px-4 py-3 rounded-xl">
+                <CheckCircle className="w-5 h-5" />
+                <span className="font-medium">{facility}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-4">
+          <button className="flex-1 py-4 bg-primary text-white rounded-xl font-bold text-lg hover:bg-green-600 transition">
+            立即预约
+          </button>
+          <button className="px-6 py-4 border-2 border-primary text-primary rounded-xl font-bold hover:bg-green-50 transition">
+            联系球馆
+          </button>
         </div>
       </div>
     </div>
