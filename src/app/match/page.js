@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Calendar, MapPin, Users, Clock, Search, Plus } from 'lucide-react'
+import { regionData } from '@/data/regions'
 
 // 模拟约球活动数据
 const mockEvents = [
@@ -117,12 +118,35 @@ export default function MatchPage() {
   const [typeFilter, setTypeFilter] = useState('全部')
   const [levelFilter, setLevelFilter] = useState('全部')
   const [showCreate, setShowCreate] = useState(false)
+  
+  // 省市区筛选
+  const [province, setProvince] = useState('')
+  const [city, setCity] = useState('')
+  const [district, setDistrict] = useState('')
+
+  const provinces = Object.keys(regionData)
+  const cities = province ? Object.keys(regionData[province] || {}) : []
+  const districts = province && city ? (regionData[province]?.[city] || []) : []
+
+  const handleProvinceChange = (value) => {
+    setProvince(value)
+    setCity('')
+    setDistrict('')
+  }
+
+  const handleCityChange = (value) => {
+    setCity(value)
+    setDistrict('')
+  }
 
   const filtered = mockEvents.filter(e => {
     const matchSearch = e.title.includes(search) || e.venue.includes(search)
     const matchType = typeFilter === '全部' || e.type === typeFilter
     const matchLevel = levelFilter === '全部' || e.level === levelFilter || e.level === '不限'
-    return matchSearch && matchType && matchLevel
+    const matchProvince = !province || e.province === province
+    const matchCity = !city || e.city === city
+    const matchDistrict = !district || e.district === district
+    return matchSearch && matchType && matchLevel && matchProvince && matchCity && matchDistrict
   })
 
   const joinEvent = (event) => {
@@ -189,8 +213,9 @@ export default function MatchPage() {
         )}
 
         {/* Filters */}
-        <div className="bg-white rounded-2xl p-4 mb-8 flex flex-col md:flex-row gap-4">
-          <div className="flex-1 relative">
+        <div className="bg-white rounded-2xl p-4 mb-8 space-y-4">
+          {/* 搜索 */}
+          <div className="relative">
             <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
@@ -200,24 +225,69 @@ export default function MatchPage() {
               className="w-full pl-10 pr-4 py-3 border rounded-xl"
             />
           </div>
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-4 py-3 border rounded-xl"
-          >
-            {eventTypes.map(t => (
-              <option key={t} value={t}>{t === '全部' ? '全部类型' : t}</option>
-            ))}
-          </select>
-          <select
-            value={levelFilter}
-            onChange={(e) => setLevelFilter(e.target.value)}
-            className="px-4 py-3 border rounded-xl"
-          >
-            {levels.map(l => (
-              <option key={l} value={l}>{l === '全部' ? '全部水平' : l}</option>
-            ))}
-          </select>
+          
+          {/* 类型和水平筛选 */}
+          <div className="flex flex-wrap gap-2">
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="px-4 py-2 border rounded-xl"
+            >
+              {eventTypes.map(t => (
+                <option key={t} value={t}>{t === '全部' ? '全部类型' : t}</option>
+              ))}
+            </select>
+            <select
+              value={levelFilter}
+              onChange={(e) => setLevelFilter(e.target.value)}
+              className="px-4 py-2 border rounded-xl"
+            >
+              {levels.map(l => (
+                <option key={l} value={l}>{l === '全部' ? '全部水平' : l}</option>
+              ))}
+            </select>
+          </div>
+          
+          {/* 省市区筛选 */}
+          <div className="grid grid-cols-3 gap-2">
+            <select 
+              value={province}
+              onChange={(e) => handleProvinceChange(e.target.value)}
+              className="px-3 py-2 border rounded-xl text-sm"
+            >
+              <option value="">全部省份</option>
+              {provinces.map(p => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+            <select 
+              value={city}
+              onChange={(e) => handleCityChange(e.target.value)}
+              disabled={!province}
+              className="px-3 py-2 border rounded-xl text-sm disabled:opacity-50"
+            >
+              <option value="">全部城市</option>
+              {cities.map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            <select 
+              value={district}
+              onChange={(e) => setDistrict(e.target.value)}
+              disabled={!city}
+              className="px-3 py-2 border rounded-xl text-sm disabled:opacity-50"
+            >
+              <option value="">全部区/县</option>
+              {districts.map(d => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Results Count */}
+        <div className="text-gray-500 text-sm mb-4">
+          找到 {filtered.length} 个活动
         </div>
 
         {/* Events List */}
@@ -257,7 +327,7 @@ export default function MatchPage() {
                 </div>
                 <div className="flex flex-col items-end gap-3">
                   <div className="text-2xl font-bold text-primary">¥{event.fee}</div>
-                  <div className="text-sm text-gray-500"> organizer: {event.organizer}</div>
+                  <div className="text-sm text-gray-500">组织者: {event.organizer}</div>
                   <button
                     onClick={() => joinEvent(event)}
                     disabled={event.currentPlayers >= event.maxPlayers}
