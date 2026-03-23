@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { MapPin, Users, Calendar, Award, ArrowRight, Star, Clock } from 'lucide-react'
-import { venues, players, events } from '@/data/venues'
+import { venues, players } from '@/data/venues'
 
 export default function HomePage() {
   return (
@@ -70,7 +70,7 @@ export default function HomePage() {
                 <div className="p-4">
                   <h3 className="font-bold mb-1">{venue.name}</h3>
                   <p className="text-gray-500 text-sm flex items-center gap-1 mb-2">
-                    <MapPin className="w-3 h-3" /> {venue.address}
+                    <MapPin className="w-3 h-3" /> {venue.district}
                   </p>
                   <div className="flex justify-between items-center">
                     <span className="text-primary font-bold">¥{venue.price}/小时</span>
@@ -94,58 +94,29 @@ export default function HomePage() {
               查看更多 <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {players.slice(0, 4).map(player => (
-              <div key={player.id} className="bg-gray-50 rounded-2xl p-6 text-center">
+              <Link key={player.id} href="/players" className="bg-gray-50 rounded-2xl p-6 text-center hover:shadow-md transition">
                 <div className="text-5xl mb-3">{player.avatar}</div>
-                <h3 className="font-bold mb-1">{player.name}</h3>
-                <p className="text-primary text-sm mb-2">等级 {player.skill}</p>
-                <p className="text-gray-500 text-sm">{player.intro}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Match Events */}
-      <section className="py-16">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold">最新约球</h2>
-            <Link href="/match" className="text-primary flex items-center gap-1 hover:underline">
-              查看更多 <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {events.map(event => (
-              <div key={event.id} className="bg-white rounded-2xl p-6 shadow-sm">
-                <div className="flex items-center gap-2 text-primary text-sm mb-2">
-                  <Calendar className="w-4 h-4" /> {event.date}
+                <h3 className="font-bold">{player.name}</h3>
+                <p className="text-gray-500 text-sm">{player.level}</p>
+                <div className="flex items-center justify-center gap-1 mt-2 text-gray-400 text-sm">
+                  <MapPin className="w-3 h-3" /> {player.district}
                 </div>
-                <h3 className="font-bold text-lg mb-2">{event.title}</h3>
-                <p className="text-gray-500 text-sm mb-2">{event.venue}</p>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">
-                    {event.players}/{event.maxPlayers} 人
-                  </span>
-                  <span className="font-bold text-primary">¥{event.fee}</span>
-                </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-gradient-to-r from-green-500 to-emerald-600 text-white">
+      <section className="py-16 bg-gradient-to-r from-primary to-emerald-600 text-white">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">准备好开始了吗？</h2>
-          <p className="text-xl mb-8 opacity-90">加入羽球圈，和万千球友一起享受羽毛球</p>
-          <div className="flex justify-center gap-4">
-            <Link href="/venues" className="px-8 py-3 bg-white text-green-600 rounded-full font-semibold hover:bg-gray-100">
-              立即体验
-            </Link>
-          </div>
+          <h2 className="text-3xl font-bold mb-4">加入羽球圈</h2>
+          <p className="text-xl mb-8 opacity-90">和更多球友一起享受羽毛球的乐趣</p>
+          <Link href="/login" className="inline-block px-8 py-3 bg-white text-primary rounded-full font-semibold hover:bg-gray-100 transition">
+            立即注册
+          </Link>
         </div>
       </section>
     </div>
