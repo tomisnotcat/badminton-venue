@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { MapPin, Star, Search, Users } from 'lucide-react'
+import { MapPin, Star, Search, Users, Clock, Phone } from 'lucide-react'
 import { venues } from '@/data/venues'
 import { regionData } from '@/data/regions'
 
 export default function VenuesPage() {
   const [search, setSearch] = useState('')
   const [priceFilter, setPriceFilter] = useState('all')
+  const [sortBy, setSortBy] = useState('rating')
   
   // 省市区筛选
   const [province, setProvince] = useState('')
@@ -29,6 +30,11 @@ export default function VenuesPage() {
     const matchCity = !city || v.city === city
     const matchDistrict = !district || v.district === district
     return matchSearch && matchPrice && matchProvince && matchCity && matchDistrict
+  }).sort((a, b) => {
+    if (sortBy === 'price') return a.price - b.price
+    if (sortBy === 'rating') return b.rating - a.rating
+    if (sortBy === 'courts') return b.courts - a.courts
+    return 0
   })
 
   const handleProvinceChange = (value) => {
@@ -45,17 +51,20 @@ export default function VenuesPage() {
   return (
     <div className="min-h-screen py-8">
       <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-3xl font-bold mb-8">球馆</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">球馆</h1>
+          <span className="text-gray-500">{filtered.length} 家球馆</span>
+        </div>
 
         {/* Filters */}
         <div className="bg-white rounded-2xl p-4 mb-8 space-y-4">
-          {/* 搜索和价格筛选 */}
+          {/* 搜索和筛选 */}
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="搜索球馆..."
+                placeholder="搜索球馆名称或地址..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border rounded-xl"
@@ -70,6 +79,15 @@ export default function VenuesPage() {
               <option value="low">25元以下</option>
               <option value="medium">25-35元</option>
               <option value="high">35元以上</option>
+            </select>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-3 border rounded-xl"
+            >
+              <option value="rating">按评分</option>
+              <option value="price">按价格</option>
+              <option value="courts">按场地数</option>
             </select>
           </div>
           
@@ -114,23 +132,47 @@ export default function VenuesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map(venue => (
             <Link href={`/venues/${venue.id}`} key={venue.id}>
-              <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition">
-                <div className="text-4xl mb-4">{venue.image}</div>
-                <h3 className="font-bold text-lg">{venue.name}</h3>
-                <div className="flex items-center gap-2 text-gray-500 mt-2">
-                  <MapPin className="w-4 h-4" />
-                  <span className="text-sm">{venue.province} {venue.city} {venue.district}</span>
-                </div>
-                <div className="flex items-center justify-between mt-4">
-                  <span className="text-2xl font-bold text-primary">¥{venue.price}<span className="text-sm text-gray-400">/小时</span></span>
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="font-medium">{venue.rating}</span>
+              <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition h-full">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="text-4xl">{venue.image}</div>
+                  <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full">
+                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                    <span className="font-bold text-sm">{venue.rating}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 mt-3 text-sm text-gray-500">
-                  <Users className="w-4 h-4" />
-                  <span>{venue.courts} 片场地</span>
+                <h3 className="font-bold text-lg mb-2">{venue.name}</h3>
+                <div className="space-y-2 text-sm text-gray-500 mb-4">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    <span>{venue.province} {venue.city} {venue.district}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4" />
+                    <span>{venue.hours}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4" />
+                    <span>{venue.courts} 片场地</span>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-1 mb-4">
+                  {venue.facilities.slice(0, 3).map(f => (
+                    <span key={f} className="text-xs bg-green-50 text-green-600 px-2 py-1 rounded-full">
+                      {f}
+                    </span>
+                  ))}
+                  {venue.facilities.length > 3 && (
+                    <span className="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-full">
+                      +{venue.facilities.length - 3}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center justify-between pt-4 border-t">
+                  <div>
+                    <span className="text-2xl font-bold text-primary">¥{venue.price}</span>
+                    <span className="text-sm text-gray-400">/小时</span>
+                  </div>
+                  <span className="text-primary text-sm font-medium">查看详情 →</span>
                 </div>
               </div>
             </Link>

@@ -1,13 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { MapPin, Star, Search, MessageCircle } from 'lucide-react'
+import { MapPin, Star, Search, MessageCircle, Trophy } from 'lucide-react'
 import { players } from '@/data/venues'
 import { regionData } from '@/data/regions'
 
 export default function PlayersPage() {
   const [search, setSearch] = useState('')
   const [levelFilter, setLevelFilter] = useState('all')
+  const [sortBy, setSortBy] = useState('skill')
   
   // 省市区筛选
   const [province, setProvince] = useState('')
@@ -25,6 +26,11 @@ export default function PlayersPage() {
     const matchCity = !city || p.city === city
     const matchDistrict = !district || p.district === district
     return matchSearch && matchLevel && matchProvince && matchCity && matchDistrict
+  }).sort((a, b) => {
+    if (sortBy === 'skill') return parseFloat(b.skill) - parseFloat(a.skill)
+    if (sortBy === 'wins') return (b.wins || 0) - (a.wins || 0)
+    if (sortBy === 'age') return a.age - b.age
+    return 0
   })
 
   const invitePlayer = (player) => {
@@ -42,20 +48,28 @@ export default function PlayersPage() {
     setDistrict('')
   }
 
+  const getWinRate = (player) => {
+    if (!player.matches || player.matches === 0) return 0
+    return Math.round((player.wins / player.matches) * 100)
+  }
+
   return (
     <div className="min-h-screen py-8">
       <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-3xl font-bold mb-8">球友</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">球友</h1>
+          <span className="text-gray-500">{filtered.length} 位球友</span>
+        </div>
 
         {/* Filters */}
         <div className="bg-white rounded-2xl p-4 mb-8 space-y-4">
-          {/* 搜索和等级筛选 */}
+          {/* 搜索和筛选 */}
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="搜索球友..."
+                placeholder="搜索球友姓名或简介..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border rounded-xl"
@@ -71,6 +85,15 @@ export default function PlayersPage() {
               <option value="中级球友">中级</option>
               <option value="高级球友">高级</option>
               <option value="资深球友">资深</option>
+            </select>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-3 border rounded-xl"
+            >
+              <option value="skill">按水平</option>
+              <option value="wins">按胜率</option>
+              <option value="age">按年龄</option>
             </select>
           </div>
           
@@ -114,24 +137,38 @@ export default function PlayersPage() {
         {/* Results */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map(player => (
-            <div key={player.id} className="bg-white rounded-2xl p-6 shadow-sm">
-              <div className="flex items-start gap-4">
-                <div className="text-4xl">{player.avatar}</div>
+            <div key={player.id} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="text-5xl">{player.avatar}</div>
                 <div className="flex-1">
                   <h3 className="font-bold text-lg">{player.name}</h3>
                   <p className="text-gray-500 text-sm">{player.level}</p>
                   <div className="flex items-center gap-2 mt-2">
                     <MapPin className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">{player.province} {player.city} {player.district}</span>
+                    <span className="text-sm text-gray-500">{player.district}</span>
                   </div>
                 </div>
                 <div className="text-right">
                   <div className="text-sm text-gray-500">水平</div>
-                  <div className="font-bold text-primary">{player.skill}</div>
+                  <div className="text-2xl font-bold text-primary">{player.skill}</div>
                 </div>
               </div>
-              <p className="text-gray-600 mt-4 text-sm">{player.intro}</p>
-              <div className="flex items-center justify-between mt-4">
+              
+              <p className="text-gray-600 text-sm mb-4">{player.intro}</p>
+              
+              {/* 统计数据 */}
+              <div className="flex items-center gap-4 mb-4 text-sm">
+                <div className="flex items-center gap-1">
+                  <Trophy className="w-4 h-4 text-yellow-500" />
+                  <span>{player.wins || 0} 胜</span>
+                </div>
+                <div className="text-gray-400">|</div>
+                <div>{player.matches || 0} 场</div>
+                <div className="text-gray-400">|</div>
+                <div className="text-green-600 font-medium">{getWinRate(player)}% 胜率</div>
+              </div>
+              
+              <div className="flex items-center justify-between pt-4 border-t">
                 <span className="text-sm text-gray-500">{player.available}</span>
                 <button
                   onClick={() => invitePlayer(player)}

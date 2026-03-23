@@ -1,13 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { MapPin, Star, Search, Users } from 'lucide-react'
+import { MapPin, Star, Search, Users, Award, CheckCircle } from 'lucide-react'
 import { coaches } from '@/data/venues'
 import { regionData } from '@/data/regions'
 
 export default function CoachesPage() {
   const [search, setSearch] = useState('')
   const [priceFilter, setPriceFilter] = useState('all')
+  const [sortBy, setSortBy] = useState('rating')
   
   // 省市区筛选
   const [province, setProvince] = useState('')
@@ -28,6 +29,11 @@ export default function CoachesPage() {
     const matchCity = !city || c.city === city
     const matchDistrict = !district || c.district === district
     return matchSearch && matchPrice && matchProvince && matchCity && matchDistrict
+  }).sort((a, b) => {
+    if (sortBy === 'rating') return b.rating - a.rating
+    if (sortBy === 'price') return a.price - b.price
+    if (sortBy === 'students') return b.students - a.students
+    return 0
   })
 
   const handleProvinceChange = (value) => {
@@ -48,17 +54,20 @@ export default function CoachesPage() {
   return (
     <div className="min-h-screen py-8">
       <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-3xl font-bold mb-8">教练</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">教练</h1>
+          <span className="text-gray-500">{filtered.length} 位教练</span>
+        </div>
 
         {/* Filters */}
         <div className="bg-white rounded-2xl p-4 mb-8 space-y-4">
-          {/* 搜索和价格筛选 */}
+          {/* 搜索和筛选 */}
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="搜索教练..."
+                placeholder="搜索教练姓名或简介..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border rounded-xl"
@@ -73,6 +82,15 @@ export default function CoachesPage() {
               <option value="low">120元以下</option>
               <option value="medium">120-180元</option>
               <option value="high">180元以上</option>
+            </select>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-3 border rounded-xl"
+            >
+              <option value="rating">按评分</option>
+              <option value="price">按价格</option>
+              <option value="students">按学员数</option>
             </select>
           </div>
           
@@ -116,40 +134,64 @@ export default function CoachesPage() {
         {/* Results */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map(coach => (
-            <div key={coach.id} className="bg-white rounded-2xl p-6 shadow-sm">
-              <div className="flex items-start gap-4">
-                <div className="text-4xl">{coach.avatar}</div>
+            <div key={coach.id} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="text-5xl">{coach.avatar}</div>
                 <div className="flex-1">
                   <h3 className="font-bold text-lg">{coach.name}</h3>
                   <p className="text-gray-500 text-sm">{coach.title}</p>
                   <div className="flex items-center gap-2 mt-2">
                     <MapPin className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">{coach.province} {coach.city} {coach.district}</span>
+                    <span className="text-sm text-gray-500">{coach.district}</span>
                   </div>
                 </div>
                 <div className="text-right">
                   <div className="text-2xl font-bold text-primary">¥{coach.price}</div>
-                  <div className="text-xs text-gray-500">/小时</div>
+                  <div className="text-xs text-gray-400">/小时</div>
                 </div>
               </div>
-              <p className="text-gray-600 mt-4 text-sm">{coach.intro}</p>
-              <div className="flex items-center justify-between mt-4">
-                <div className="flex items-center gap-3 text-sm text-gray-500">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span>{coach.rating}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Users className="w-4 h-4" />
-                    <span>{coach.students} 学员</span>
-                  </div>
-                  <span>{coach.experience}经验</span>
+              
+              <p className="text-gray-600 text-sm mb-4">{coach.intro}</p>
+              
+              {/* 资质认证 */}
+              {coach.certifications && (
+                <div className="flex flex-wrap gap-1 mb-4">
+                  {coach.certifications.map(cert => (
+                    <span key={cert} className="flex items-center gap-1 text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-full">
+                      <CheckCircle className="w-3 h-3" />
+                      {cert}
+                    </span>
+                  ))}
                 </div>
+              )}
+              
+              {/* 专长 */}
+              <div className="text-sm text-gray-500 mb-4">
+                <span className="font-medium">专长：</span>{coach.specialty}
+              </div>
+              
+              {/* 统计数据 */}
+              <div className="flex items-center gap-4 mb-4 text-sm pb-4 border-b">
+                <div className="flex items-center gap-1">
+                  <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                  <span className="font-bold">{coach.rating}</span>
+                </div>
+                <div className="text-gray-400">|</div>
+                <div className="flex items-center gap-1">
+                  <Users className="w-4 h-4 text-gray-400" />
+                  <span>{coach.students} 学员</span>
+                </div>
+                <div className="text-gray-400">|</div>
+                <div>{coach.experience}</div>
+              </div>
+              
+              <div className="flex items-center justify-between pt-4">
+                <span className="text-sm text-gray-500">{coach.experience}教龄</span>
                 <button
                   onClick={() => bookCoach(coach)}
-                  className="px-4 py-2 bg-primary text-white rounded-xl text-sm"
+                  className="px-6 py-2 bg-primary text-white rounded-xl text-sm font-medium"
                 >
-                  预约
+                  立即预约
                 </button>
               </div>
             </div>
