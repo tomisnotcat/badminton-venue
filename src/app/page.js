@@ -11,7 +11,7 @@ export default function HomePage() {
           <h1 className="text-4xl md:text-5xl font-bold mb-4">一起打球，更有趣</h1>
           <p className="text-xl mb-8 opacity-90">找球馆、约球友、找教练，就上羽球圈</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/venues" className="px-8 py-3 bg-white text-green-600 rounded-full font-semibold hover:bg-gray-100 transition">🏀 找球馆</Link>
+            <Link href="/venues" className="px-8 py-3 bg-white text-green-600 rounded-full font-semibold hover:bg-gray-100 transition">🏸 找球馆</Link>
             <Link href="/match" className="px-8 py-3 bg-green-700 text-white rounded-full font-semibold hover:bg-green-800 transition">📅 去约球</Link>
             <Link href="/coaches" className="px-8 py-3 bg-green-700 text-white rounded-full font-semibold hover:bg-green-800 transition">🏅 找教练</Link>
           </div>
