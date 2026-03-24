@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { MapPin, Star, Search, MessageCircle, Trophy, User } from 'lucide-react'
+import { MapPin, Star, Search, MessageCircle, Trophy, User, Heart } from 'lucide-react'
 import { players } from '@/data/venues'
 import { regionData } from '@/data/regions'
 
@@ -13,6 +13,7 @@ export default function PlayersPage() {
   const [province, setProvince] = useState('')
   const [city, setCity] = useState('')
   const [district, setDistrict] = useState('')
+  const [likedPlayers, setLikedPlayers] = useState([])
 
   const provinces = Object.keys(regionData)
   const cities = province ? Object.keys(regionData[province] || {}) : []
@@ -20,6 +21,11 @@ export default function PlayersPage() {
 
   const handleProvinceChange = (value) => { setProvince(value); setCity(''); setDistrict('') }
   const handleCityChange = (value) => { setCity(value); setDistrict('') }
+
+  const toggleLike = (id, e) => {
+    e.preventDefault()
+    setLikedPlayers(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id])
+  }
 
   const filtered = players.filter(p => {
     const matchSearch = p.name.includes(search) || p.intro.includes(search)
@@ -41,7 +47,7 @@ export default function PlayersPage() {
   }
 
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-8 pb-20">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -80,8 +86,11 @@ export default function PlayersPage() {
         {filtered.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map(player => (
-              <Link href={`/players/${player.id}`} key={player.id}>
-                <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition h-full">
+              <Link href={`/players/${player.id}`} key={player.id} className="group">
+                <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition h-full relative">
+                  <button onClick={(e) => toggleLike(player.id, e)} className={`absolute top-4 right-4 z-10 p-2 rounded-full shadow-sm transition ${likedPlayers.includes(player.id) ? 'bg-red-50 text-red-500' : 'bg-gray-50 text-gray-400 hover:text-red-500'}`}>
+                    <Heart className={`w-5 h-5 ${likedPlayers.includes(player.id) ? 'fill-current' : ''}`} />
+                  </button>
                   <div className="flex items-start gap-4 mb-4">
                     <div className="text-5xl">{player.avatar}</div>
                     <div className="flex-1">
@@ -97,7 +106,7 @@ export default function PlayersPage() {
                       <div className="text-xs text-gray-400">水平</div>
                     </div>
                   </div>
-                  <p className="text-gray-600 text-sm mb-4">{player.intro}</p>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{player.intro}</p>
                   <div className="flex items-center gap-4 mb-4 text-sm">
                     <div className="flex items-center gap-1">
                       <Trophy className="w-4 h-4 text-yellow-500" />

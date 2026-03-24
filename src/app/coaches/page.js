@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { MapPin, Star, Search, Users, Award, CheckCircle } from 'lucide-react'
+import { MapPin, Star, Search, Users, Award, Heart } from 'lucide-react'
 import { coaches } from '@/data/venues'
 import { regionData } from '@/data/regions'
 
@@ -13,6 +13,7 @@ export default function CoachesPage() {
   const [province, setProvince] = useState('')
   const [city, setCity] = useState('')
   const [district, setDistrict] = useState('')
+  const [likedCoaches, setLikedCoaches] = useState([])
 
   const provinces = Object.keys(regionData)
   const cities = province ? Object.keys(regionData[province] || {}) : []
@@ -20,6 +21,11 @@ export default function CoachesPage() {
 
   const handleProvinceChange = (value) => { setProvince(value); setCity(''); setDistrict('') }
   const handleCityChange = (value) => { setCity(value); setDistrict('') }
+
+  const toggleLike = (id, e) => {
+    e.preventDefault()
+    setLikedCoaches(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id])
+  }
 
   const filtered = coaches.filter(c => {
     const matchSearch = c.name.includes(search) || c.intro.includes(search)
@@ -36,7 +42,7 @@ export default function CoachesPage() {
   })
 
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-8 pb-20">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -75,8 +81,11 @@ export default function CoachesPage() {
         {filtered.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map(coach => (
-              <Link href={`/coaches/${coach.id}`} key={coach.id}>
-                <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition h-full">
+              <Link href={`/coaches/${coach.id}`} key={coach.id} className="group">
+                <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition h-full relative">
+                  <button onClick={(e) => toggleLike(coach.id, e)} className={`absolute top-4 right-4 z-10 p-2 rounded-full shadow-sm transition ${likedCoaches.includes(coach.id) ? 'bg-red-50 text-red-500' : 'bg-gray-50 text-gray-400 hover:text-red-500'}`}>
+                    <Heart className={`w-5 h-5 ${likedCoaches.includes(coach.id) ? 'fill-current' : ''}`} />
+                  </button>
                   <div className="flex items-start gap-4 mb-4">
                     <div className="text-5xl">{coach.avatar}</div>
                     <div className="flex-1">
@@ -92,7 +101,7 @@ export default function CoachesPage() {
                       <div className="text-xs text-gray-400">/小时</div>
                     </div>
                   </div>
-                  <p className="text-gray-600 text-sm mb-4">{coach.intro}</p>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{coach.intro}</p>
                   {coach.certifications && (
                     <div className="flex flex-wrap gap-1 mb-4">
                       {coach.certifications.slice(0, 2).map(cert => <span key={cert} className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-full">{cert}</span>)}
